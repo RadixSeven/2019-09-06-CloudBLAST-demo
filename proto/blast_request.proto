@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package ncbi.cloudblast.v1alpha;
+
+option java_package = "gov.nih.nlm.ncbi.cloudblast.v1alpha";
+option java_multiple_files = false;
+option java_outer_classname = "BlastRequestProto";
+option optimize_for = SPEED;
+
+
+message UserIdentity {
+  // collection of various user identifiers
+  string user_id = 1;
+  string session_id = 2;
+}
+
+enum NAStrand {
+  UNKNOWN = 0;
+  PLUS = 1;
+  MINUS = 2;
+}
+
+message BlastRequest {
+  // Define BLAST search request
+
+  enum BlastProgram {
+    // Supported BLAST programs
+
+    BLASTN = 0;
+  }
+
+  message BlastParams {
+
+    // E-value threshold
+    float evalue = 1;
+
+    // Gap extension penalty
+    uint32 gap_extend = 2;
+
+    // Gap opening penalty
+    uint32 gap_open = 3;
+
+    // Number of databases sequences to keep (integer, greater than zero)
+    uint32 hitlist_size = 4;
+
+    // Percent identity threshold
+    float perc_identity = 5;
+
+    // The size of the initial word that must be matched between the
+    // database and the query sequence
+    uint32 word_size  = 6;
+
+    // Multiple hits window size, use 0 to specify 1-hit algorithm
+    uint32 window_size = 7;
+
+    // Cost for mismatched bases (BLASTN and megaBLAST)
+    sint32 penalty = 8;
+
+    // Reward for matching bases (BLASTN and megaBLAST)
+    uint32 reward = 9;
+
+    // Query strand(s) to search against database/subject.
+    NAStrand strand = 10;
+  }
+
+  // Same as DBCatalog.DbInfo.db_tag
+  string db_tag = 1;
+
+  // Search query (accession, GI, or FASTA)
+  oneof query {
+    string verbatim_seq = 2;
+    string seq_accession = 3;
+    string fasta = 9;
+  }
+
+  SeqCoord coords = 8;
+
+  // GS bucket name for storing the search result
+  string result_bucket_name = 4;
+
+  // BLAST program
+  BlastProgram program = 5;
+
+  // BLAST parameters
+  BlastParams blast_params = 6;
+
+  // Tags provided by user to describe/identify this request
+  repeated string user_tags = 7;
+}
+
+message SeqCoord {
+  // Sequence coordinates range from 1 to the sequence length.
+  // The start and stop values are inclusive (ie. a closed interval)
+
+  uint64 start = 1;
+  uint64 stop = 2;
+  NAStrand strand = 3;
+}
