@@ -68,7 +68,7 @@ required to install BLAST in your GCP project.
 
 1. Download the "spawner" script:
 
-       gsutil cat gs://strides-cloudblast-artifacts/deploy/spawn-heads-production.tgz | tar xz
+       gsutil cat gs://strides-cloudblast-artifacts/deploy/spawn-latest.tgz | tar xz
 
 1. Run the spawner script:
 
